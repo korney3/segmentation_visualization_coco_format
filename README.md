@@ -1,53 +1,39 @@
 
 # COCO-format segmentation visualization
 
-![](images/test.jpg)
-
-Repo contains scripts to split image into pieces with predefined size and merge obtained pieces into initial image.
-
+Repo contains scripts for visualizing segmentation datasets in COCO-format.
+Based on custom COCO-dataset [tutorial](https://www.immersivelimit.com/tutorials/create-coco-annotations-from-scratch/#preview-coco-annotations)
 ## Installation
 
 ```
-   conda create --name sliding_window python=3.8
-   conda activate sliding_window
-   pip install opencv_contrib_python
-   git clone https://github.com/korney3/image_sliding_window_cutter
+   conda create --name segmentation_visualization python=3.7
+   conda activate segmentation_visualization
+   pip install --upgrade Pillow
+   pip install html2image
+   git clone https://github.com/korney3/segmentation_visualization_coco_format
 ```
 
 
 ## Code
 
-
-### Download dataset
-
-[COCO validation set](https://cocodataset.org/#download)
-
 Пример использования находится в [main](main.py)
 
 
-Скрипт [split](split.py) принимает на вход картинку,
-    размер (h, w) окна в пикселях или процентах,
-    смещение по x и y, и нарезает
-    изображения sliding window подходом.
+Объект класса [CocoDataset](coco_dataset.py) принимает на вход пути до файла с аннотациями и папке исходных изображений.
 ```
     Arguments:
-        image_path (str): path to image to split
-        window_size (Tuple[int, int] or Tuple[float, float]): width 
-                                    and height of sliding window 
-                                    in pixels of percent
-        use_percent (bool) = False: if window size is given is percent
-        x_shift (int) = 0: shift of start of cutting x-coordinate
-        y_shift (int) = 0: shift of start of cutting y-coordinate
-        result_dir (str) = "./split_image": directory to store image's pieces
-    Returns:
-        Path to cut image
+        annotation_path (str): path to file with annotations
+        image_dir (str): path to directory with images to annotate
 ```
-Скрипт [merge](merge.py) принимает на вход папку
-    с нарезанными картинками и из них собирает
-    оригинальную.
+
+Объект класса [Visualizer](visualizer.py) принимает на COCO-dataset, путь к папке, где будут лежать картинки с
+аннотациями, и минимальный и максимальный размер шрифта, которым будут подписываются объекты в зависимости от размера
+полигона
+
 ```
     Arguments:
-        image_dir (str): path to directory with splitted images
-    Returns:
-        Numpy array with merged image
+        coco_dataset (CocoDataset): object of CocoDataset with loaded list of image and annotations info
+        results_dir (str): directory to store annotated image
+        max_font_size (int): size of label of largest object
+        min_font_size (int): size of label of smallest object
 ```
